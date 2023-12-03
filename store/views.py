@@ -11,8 +11,8 @@ from .serializers import ProductSerializer
 
 @api_view()
 def product_view(request):
-    querySet = Product.objects.all()
-    serializer = ProductSerializer(querySet, many=True)
+    querySet = Product.objects.select_related('collection').all()
+    serializer = ProductSerializer(querySet, many=True, context={'request': request}) #context for hyperlinkerelated fields
     return Response(serializer.data)
 
 
@@ -21,3 +21,8 @@ def products_details(request, id):
     product = get_object_or_404(Product, pk=id)
     serializer = ProductSerializer(product)
     return Response(serializer.data)
+
+
+@api_view()
+def collection_details(request, id):
+    return Response('ok')
