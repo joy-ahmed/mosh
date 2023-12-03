@@ -9,11 +9,16 @@ from .serializers import ProductSerializer
 
 # Create your views here.
 
-@api_view()
+@api_view(['GET', 'POST'])
 def product_view(request):
-    querySet = Product.objects.select_related('collection').all()
-    serializer = ProductSerializer(querySet, many=True, context={'request': request}) #context for hyperlinkerelated fields
-    return Response(serializer.data)
+    if request.method == 'GET':
+        querySet = Product.objects.select_related('collection').all()
+        serializer = ProductSerializer(querySet, many=True, context={'request': request}) #context for hyperlinkerelated fields
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ProductSerializer(data=request.data)
+        return Response('ok')
 
 
 @api_view()
