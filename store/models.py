@@ -20,7 +20,7 @@ class Collection(models.Model):
 class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField()
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_updated = models.DateField(auto_now=True)
