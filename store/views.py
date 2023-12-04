@@ -1,10 +1,11 @@
+from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Product
-from .serializers import ProductSerializer
+from .models import *
+from .serializers import *
 
 
 # Create your views here.
@@ -47,6 +48,34 @@ def products_details(request, id):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view()
-def collection_details(request, id):
-    return Response('ok')
+@api_view(['GET', 'POST'])
+def collection_list(request):
+    if request.method == 'GET':
+        queryset = Collection.objects.annotate(products_count=Count('product')).all()
+        serializer = CollectionSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    if request.method == 'POST':
+        serializer = CollectionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def collection_details(request, pk):
+    collection = get_object_or_404(
+        Collection.objects.annotate(products_count=Count('product')), pk=pk
+    )
+    if request.method == 'GET':
+        serializer = CollectionSerializer(collection)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = CollectionSerializer(collection, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    elif request.method == 'DELETE':
+        if collection.product.count() > 0:
+            return Response({'error': 'Collection can not be deleted'})
+        collection.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
