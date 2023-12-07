@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'price']
+    list_display = ['id','title', 'price']
 
 admin.site.register(Collection)
 admin.site.register(Promotion)

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    <div class="row">
+        {% if registered %}
+            {% if messages %}
+                <div class="alert alert-success alert-dismissible show" role='alert'>
+                    {% for message in messages %}
+                        {{ message }}
+                        <button type='button' class="btn-close" data-bs-dismiss='alert' area-lebel="close"></button>
+                        <span>login to your account <a href="{% url "login" %}">here</a></span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+ 
+        {% else %}
+            <div class="col-md-6 mx-auto">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{user_form.as_p}}
+                        {{userInfo_form.as_p}}
+                        <button class="btn btn-primary" type="submit">Sign Up</button>
+                    </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock main %}

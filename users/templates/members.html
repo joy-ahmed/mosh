@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <h1>Hi👋{{request.user}}</h1>
+    <h1>Meet all freeking members😓</h1>
+    <div class="d-flex ">
+        {% for user in users %}
+            <div style="width: 80px; height: 80px; background-color: darkblue; border-radius: 100px;">
+                <img style="width: 100%; border-radius: 100%;" src="{{user.profile_pic.url}}" alt="">
+            </div>
+            <span>{{user.user}}</span>
+        {% endfor %}
+    </div>
+{% endblock main %}
